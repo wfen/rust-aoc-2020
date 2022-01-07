@@ -1,8 +1,8 @@
-use std::ops::RangeInclusive;
 use std::fmt::Debug;
+use std::ops::RangeInclusive;
 
 fn main() -> anyhow::Result<()> {
-     let count1 = include_str!("input.txt")
+    let count1 = include_str!("input.txt")
         .lines()
         .map(parse_line1)
         .map(Result::unwrap)
@@ -73,7 +73,7 @@ struct PasswordPolicy2 {
 
 impl PasswordPolicy2 {
     fn is_valid(&self, password: &str) -> bool {
-       self.positions
+        self.positions
             .iter()
             .copied()
             .filter(|&index| password.as_bytes()[index] == self.byte)
@@ -212,7 +212,6 @@ mod tests {
     }
 }
 
-
 // Manually parsing lines instead of leveraging a parser generator (i.e. nom, peg)
 
 #[derive(thiserror::Error, Debug)]
@@ -233,7 +232,7 @@ fn parse_line0(s: &str) -> anyhow::Result<(PasswordPolicy1, &str)> {
                 .next()
                 .ok_or(ParseError::Expected("password"))?
                 .trim(),
-            )
+        )
     };
 
     let (range, byte) = {
@@ -251,7 +250,7 @@ fn parse_line0(s: &str) -> anyhow::Result<(PasswordPolicy1, &str)> {
     let byte = if byte.as_bytes().len() == 1 {
         byte.as_bytes()[0]
     } else {
-        return Err(ParseError::Expected("password policy byte to be exactly 1 byte").into())
+        return Err(ParseError::Expected("password policy byte to be exactly 1 byte").into());
     };
 
     let (min, max) = {
@@ -263,7 +262,7 @@ fn parse_line0(s: &str) -> anyhow::Result<(PasswordPolicy1, &str)> {
             tokens
                 .next()
                 .ok_or(ParseError::Expected("policy range (upper bound)"))?,
-            )
+        )
     };
 
     let range = (min.parse()?)..=(max.parse()?);
