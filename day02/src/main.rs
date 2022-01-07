@@ -1,11 +1,8 @@
 use std::ops::RangeInclusive;
 use std::fmt::Debug;
 
-
 fn main() -> anyhow::Result<()> {
-    // lines() works like split('\n') but it also supports \r\n (CRLF) Windows-style line endings
-    // don't bother collecting into a result... just answer the question using filter and count
-    let count1 = include_str!("input.txt")
+     let count1 = include_str!("input.txt")
         .lines()
         .map(parse_line1)
         .map(Result::unwrap)
@@ -76,12 +73,7 @@ struct PasswordPolicy2 {
 
 impl PasswordPolicy2 {
     fn is_valid(&self, password: &str) -> bool {
-        // why .copied() ... password.as_bytes().iter() gives us an Iterator<Item = &u8>
-        // u8 implements the Copy trait, so we don't need to worry about its ownership
-        // iter.filter() when iter is an Iterator<Item = T>, passes &T.
-        // we're filtering, avoid "consuming" the items... just read and decide on inclusion
-        // filter(|&b| b == self.byte) ... is equivalent to ... filter(|b| *b == self.byte)
-        self.positions
+       self.positions
             .iter()
             .copied()
             .filter(|&index| password.as_bytes()[index] == self.byte)
@@ -177,7 +169,7 @@ mod tests {
         );
 
         /*
-        // these checks are specific to our manual parser's error messages
+        // these checks only apply to our manual parser's error messages
         assert_eq!(
             parse_line1("1-3 a").unwrap_err().to_string(),
             "expected password"
@@ -187,8 +179,6 @@ mod tests {
             "expected password policy byte to be exactly 1 byte"
         );
         */
-
-        // feel free to add more tests!
     }
 
     use super::PasswordPolicy2;
@@ -219,25 +209,11 @@ mod tests {
                 "banana"
             )
         );
-
-        /*
-        // these checks are specific to our manual parser's error messages
-        assert_eq!(
-            parse_line1("1-3 a").unwrap_err().to_string(),
-            "expected password"
-        );
-        assert_eq!(
-            parse_line1("1-3 : banana").unwrap_err().to_string(),
-            "expected password policy byte to be exactly 1 byte"
-        );
-        */
-
-        // feel free to add more tests!
     }
 }
 
-/*
-// Manually parsing lines versus leveraging a parser generator (i.e. nom, peg)
+
+// Manually parsing lines instead of leveraging a parser generator (i.e. nom, peg)
 
 #[derive(thiserror::Error, Debug)]
 enum ParseError {
@@ -245,7 +221,8 @@ enum ParseError {
     Expected(&'static str),
 }
 
-fn parse_line1(s: &str) -> anyhow::Result<(PasswordPolicy1, &str)> {
+#[allow(dead_code)]
+fn parse_line0(s: &str) -> anyhow::Result<(PasswordPolicy1, &str)> {
     let (policy, password) = {
         let mut tokens = s.split(':');
         (
@@ -293,4 +270,3 @@ fn parse_line1(s: &str) -> anyhow::Result<(PasswordPolicy1, &str)> {
 
     Ok((PasswordPolicy1 { range, byte }, password))
 }
-*/
