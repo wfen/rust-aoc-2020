@@ -1,0 +1,12 @@
+[package]
+name = "day07"
+version = "0.1.0"
+authors = ["Ward Fenton <ward.fenton@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+multimap = "0.8.3"
+peg = "0.8.0"
+itertools = "0.10.3"
