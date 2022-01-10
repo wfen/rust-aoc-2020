@@ -66,3 +66,7 @@ cargo run --release
   &nbsp;|&nbsp; [**Blog post** &nbsp;![amos](images/amos_32x32.png "amos")](https://fasterthanli.me/series/advent-of-code-2020/part-13)
   &nbsp;|&nbsp; [![twitter](images/twitter_32x32.png "twitter")](https://twitter.com/fasterthanlime/status/1344284928901525504)
   &nbsp;|&nbsp; [![reddit](images/reddit_32x32.png "reddit")](https://www.reddit.com/r/fasterthanlime/comments/kn2usl/day_13_advent_of_code_2020/)
+* [**Day 14** &nbsp;![aoc](images/aoc_32x32.png "aoc")](https://adventofcode.com/2020/day/14)
+  &nbsp;|&nbsp; [**Blog post** &nbsp;![amos](images/amos_32x32.png "amos")](https://fasterthanli.me/series/advent-of-code-2020/part-14)
+  &nbsp;|&nbsp; [![twitter](images/twitter_32x32.png "twitter")](https://twitter.com/fasterthanlime/status/1344347748905193475)
+  &nbsp;|&nbsp; [![reddit](images/reddit_32x32.png "reddit")](https://www.reddit.com/r/fasterthanlime/comments/kn7iz8/day_14_advent_of_code_2020/)
