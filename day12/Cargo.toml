@@ -1,0 +1,10 @@
+[package]
+name = "day12"
+version = "0.1.0"
+authors = ["Ward Fenton <ward.fenton@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+derive_more = { version = "0.99.17", features = ["add"], default-features = false }
