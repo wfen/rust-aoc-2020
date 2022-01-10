@@ -11,6 +11,17 @@ impl Vec2 {
     fn manhattan(self) -> usize {
         (self.x.abs() + self.y.abs()) as _
     }
+
+    fn rotate(self, d: AngleDelta) -> Self {
+        let Self { x, y } = self;
+        match d.0.rem_euclid(4) {
+            0 => Self { x, y },
+            1 => Self { x: y, y: -x },
+            2 => Self { x: -x, y: -y },
+            3 => Self { x: -y, y: x },
+            _ => unreachable!(),
+        }
+    }
 }
 
 // we often move several units in some direction... so it'd be neat to multiply a Vec2 by an isize
@@ -88,14 +99,14 @@ impl std::ops::Add<AngleDelta> for Direction {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-struct ShipState {
+struct ShipState1 {
     pos: Vec2,
     dir: Direction,
 }
 
 // really nice impl to leverage with fold... imagine we start with initial state,
 // and keep applying modifications to it, from each instruction yielded by an iterator
-impl std::ops::Add<Instruction> for ShipState {
+impl std::ops::Add<Instruction> for ShipState1 {
     type Output = Self;
 
     fn add(self, rhs: Instruction) -> Self::Output {
@@ -110,6 +121,39 @@ impl std::ops::Add<Instruction> for ShipState {
             },
             Instruction::Advance(units) => Self {
                 pos: self.pos + self.dir.vec() * units,
+                ..self
+            },
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+struct ShipState2 {
+    pos: Vec2,
+    dir: Direction,
+    waypoint: Vec2,
+}
+
+// really nice impl to leverage with fold... imagine we start with initial state,
+// and keep applying modifications to it, from each instruction yielded by an iterator
+impl std::ops::Add<Instruction> for ShipState2 {
+    type Output = Self;
+
+    fn add(self, rhs: Instruction) -> Self::Output {
+        match rhs {
+            // moves waypoint
+            Instruction::Move(dir, units) => Self {
+                waypoint: self.waypoint + dir.vec() * units,
+                ..self
+            },
+            // rotates waypoint (relative to ship)
+            Instruction::Rotate(delta) => Self {
+                waypoint: self.waypoint.rotate(delta),
+                ..self
+            },
+            // advanced towards waypoint
+            Instruction::Advance(units) => Self {
+                pos: self.pos + self.waypoint * units,
                 ..self
             },
         }
@@ -146,17 +190,32 @@ fn parse_instructions(input: &str) -> impl Iterator<Item = Instruction> + '_ {
 }
 
 fn main() {
+    /*
     for ins in parse_instructions(include_str!("input.txt")) {
         println!("{:?}", ins);
     }
+    */
 
-    let start = ShipState {
+    let start = ShipState1 {
         dir: Direction::East,
         pos: Vec2 { x: 0, y: 0 },
     };
     let end = parse_instructions(include_str!("input.txt")).fold(start, |state, ins| state + ins);
 
-    dbg!(start, end, (end.pos - start.pos).manhattan());
+    //dbg!(start, end);
+    println!("Part 1:");
+    println!("  {}", (end.pos - start.pos).manhattan());
+
+    let start2 = ShipState2 {
+        dir: Direction::East,
+        pos: Vec2 { x: 0, y: 0 },
+        waypoint: Vec2 { x: 10, y: 1 },
+    };
+    let end2 = parse_instructions(include_str!("input.txt")).fold(start2, |state, ins| state + ins);
+    //dbg!(start2, end2);
+    println!("Part 2:");
+    println!("  {}", (end2.pos - start2.pos).manhattan())
+
 }
 
 
@@ -172,6 +231,18 @@ fn manhattan_example() {
     let start = Vec2 { x: 0, y: 0 };
     let end = Vec2 { x: 17, y: -8 };
     assert_eq!((end - start).manhattan(), 25);
+}
+
+#[test]
+fn test_rotate() {
+    let v = Vec2 { x: 3, y: 1 };
+    assert_eq!(v.rotate(AngleDelta(0)), v);
+    assert_eq!(v.rotate(AngleDelta(4)), v);
+    assert_eq!(v.rotate(AngleDelta(-4)), v);
+
+    assert_eq!(v.rotate(AngleDelta(1)), Vec2 { x: 1, y: -3 });
+    assert_eq!(v.rotate(AngleDelta(2)), Vec2 { x: -3, y: -1 });
+    assert_eq!(v.rotate(AngleDelta(3)), Vec2 { x: -1, y: 3 });
 }
 
 #[test]
@@ -199,3 +270,4 @@ fn test_direction_add() {
     // Doing a 360°
     assert_eq!(Direction::East + AngleDelta(4), Direction::East);
 }
+
